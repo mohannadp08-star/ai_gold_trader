@@ -1,23 +1,12 @@
-def make_decision(rf_signal, lstm_price, current_price, rsi, anomaly):
+def make_decision(rf_pred, pred_price, current_price, rsi, anomaly):
     """
-    القرار النهائي للنظام
-    جميع المتغيرات يجب أن تكون قيم مفردة (int, float, bool)
-    
-    rf_signal   : int   -> 1 إذا RF يتوقع صعود، 0 إذا هبوط
-    lstm_price  : float -> السعر المتوقع من LSTM
-    current_price: float -> السعر الحالي
-    rsi         : float -> مؤشر القوة النسبية RSI
-    anomaly     : bool  -> True إذا سلوك شاذ
+    اتخاذ القرار النهائي: BUY / SELL / HOLD
     """
-
-    # شراء
-    if rf_signal == 1 and lstm_price > current_price and rsi < 70 and not anomaly:
+    if anomaly:
+        return "HOLD"
+    if rf_pred == 1 and pred_price > current_price and rsi < 70:
         return "BUY"
-
-    # بيع
-    elif rf_signal == 0 and lstm_price < current_price and rsi > 30 and not anomaly:
+    elif rf_pred == 0 and pred_price < current_price and rsi > 30:
         return "SELL"
-
-    # الاحتفاظ
     else:
         return "HOLD"
