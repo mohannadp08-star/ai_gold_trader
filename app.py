@@ -28,9 +28,26 @@ decision = decide_trade(predicted_price, confidence)
 if confidence > 0.8:
     send_discord_alert(decision, predicted_price, confidence)
 
-# --- عرض الرسم ---
+# --- عرض الرسم البياني ---
 st.subheader("Gold Price Chart")
 st.plotly_chart(plot_signals(df, predicted_price, decision))
 
-# --- عرض القرار الحالي ---
-st.write(f"**Current Decision:** {decision} | **Confidence:** {confidence:.2f}")
+# --- عرض Decision و Confidence بالعربي والانجليزي ---
+def display_decision(decision, confidence):
+    """
+    عرض القرار باللون المناسب مع الترجمة
+    """
+    if decision == "BUY":
+        color = "green"
+        decision_ar = "شراء"
+    elif decision == "SELL":
+        color = "red"
+        decision_ar = "بيع"
+    else:
+        color = "orange"
+        decision_ar = "انتظار"
+
+    st.markdown(f"### Current Decision (EN/AR): **<span style='color:{color}'>{decision} / {decision_ar}</span>**", unsafe_allow_html=True)
+    st.markdown(f"### Confidence: **{confidence*100:.1f}%**")
+
+display_decision(decision, confidence)
