@@ -4,6 +4,9 @@ def plot_signals(df, predicted_price, decision):
     """
     رسم شارت الذهب مع EMA، إشارة التداول، SL و TP
     """
+    if df.empty:
+        return go.Figure()
+
     current_price = df["Close"].iloc[-1]
 
     # حساب SL و TP
@@ -38,4 +41,39 @@ def plot_signals(df, predicted_price, decision):
     ))
 
     # --- Take Profit ---
-    fig.add_t_
+    fig.add_trace(go.Scatter(
+        x=[df.index[-1]], y=[take_profit], mode="markers",
+        marker=dict(color="lime", size=10, symbol="triangle-up"),
+        name="Take Profit"
+    ))
+
+    # --- Stop Loss ---
+    fig.add_trace(go.Scatter(
+        x=[df.index[-1]], y=[stop_loss], mode="markers",
+        marker=dict(color="red", size=10, symbol="triangle-down"),
+        name="Stop Loss"
+    ))
+
+    # --- Buy/Sell Signal ---
+    if decision == "BUY":
+        fig.add_trace(go.Scatter(
+            x=[df.index[-1]], y=[current_price], mode="markers",
+            marker=dict(color="green", size=14, symbol="star"),
+            name="BUY Signal"
+        ))
+    elif decision == "SELL":
+        fig.add_trace(go.Scatter(
+            x=[df.index[-1]], y=[current_price], mode="markers",
+            marker=dict(color="red", size=14, symbol="star"),
+            name="SELL Signal"
+        ))
+
+    fig.update_layout(
+        title="Gold Price Chart with Signals, EMA, TP & SL",
+        xaxis_title="Date",
+        yaxis_title="Price (USD)",
+        template="plotly_dark",
+        legend=dict(x=0, y=1)
+    )
+
+    return fig
