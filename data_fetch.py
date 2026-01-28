@@ -1,23 +1,18 @@
-
-import os
-import pandas as pd
 import yfinance as yf
+import pandas as pd
 
-CACHE_FILE = "gold_data_cache.csv"
+CACHE_FILE = "gold_data.csv"
 
-def fetch_gold_data(period="60d", interval="1h"):
-    if os.path.exists(CACHE_FILE):
-        df = pd.read_csv(CACHE_FILE, parse_dates=["Datetime"])
-        print("Loaded gold data from local cache.")
-        return df.set_index("Datetime")
-
+def fetch_gold_data():
+    """
+    جلب بيانات الذهب التاريخية من Yahoo Finance
+    أو تحميلها من الكاش المحلي إذا كان موجودًا
+    """
     try:
-        df = yf.download("GC=F", period=period, interval=interval)
-        df = df.reset_index()
-        df.rename(columns={"Close": "XAU"}, inplace=True)
-        df.to_csv(CACHE_FILE, index=False)
-        print("Fetched gold data from Yahoo Finance and cached.")
-        return df.set_index("Datetime")
-    except Exception as e:
-        print(f"Failed to fetch data: {e}")
-        return pd.DataFrame()
+        df = pd.read_csv(CACHE_FILE, index_col=0, parse_dates=True)
+        print("Loaded cached data")
+    except FileNotFoundError:
+        print("Fetching data from Yahoo Finance...")
+        df = yf.download("GC=F", start="2020-01-01", interval="1d")
+        df.to_csv(CACHE_FILE)
+    return df
