@@ -1,10 +1,9 @@
-streamlit
-pandas
-numpy
-scikit-learn
-tensorflow
-requests
-yfinance
-plotly
-alerts
-#MetaTrader5
+# requirements.txt
+streamlit==1.53.1
+pandas==2.3.3
+numpy==2.4.1
+scikit-learn==1.8.0
+tensorflow==2.20.0
+requests==2.32.5
+yfinance==1.1.0
+plotly==6.5.2

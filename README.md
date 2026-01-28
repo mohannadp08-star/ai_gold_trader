@@ -11,23 +11,26 @@ Auto AI Gold Trader هو نظام تداول ذكي للذهب مقابل الد
 
 
 ai_gold_trader/
-│
-├── requirements.txt # مكتبات بايثون اللازمة لتشغيل المشروع
-├── data_fetch.py # جلب بيانات الذهب من Yahoo Finance
-├── analysis.py # حساب المؤشرات الفنية مثل EMA و RSI
-├── quant_features.py # إضافة ميزات Quant إضافية مثل Volatility و Momentum
-├── ml_model.py # تدريب نموذج Random Forest للتنبؤ بالاتجاه
-├── lstm_model.py # تدريب نموذج LSTM للتنبؤ بالسعر المستقبلي
-├── confidence.py # حساب نسبة الثقة للإشارة
-├── risk_management.py # حساب ATR, SL/TP, وإدارة رأس المال
-├── model_utils.py # حفظ وتحميل النماذج بعد التدريب
-├── decision_engine.py # اتخاذ القرار النهائي (BUY / SELL / HOLD)
-├── backtester.py # تجربة الاستراتيجية تاريخيًا (Backtesting)
-├── discord_alerts.py # إرسال إشعارات إلى Discord
-├── mt5_executor.py # تنفيذ الصفقات على MT5 (placeholder)
-└── app.py # التطبيق الرئيسي باستخدام Streamlit
 
+│app.py → الصفحة الرئيسية مع الشارت، السعر، التوصية، Stop Loss / Take Profit، Discord alerts.
 
+alerts.py → إرسال التنبيهات إلى Discord.
+
+data_fetch.py → جلب بيانات الذهب من Yahoo Finance.
+
+analysis.py → حساب المؤشرات (RSI, EMA…).
+
+quant_features.py → ميزات Quant إضافية (Volatility, Momentum…).
+
+ml_model.py → تدريب Random Forest.
+
+decision_engine.py → اتخاذ القرار BUY / SELL / HOLD.
+
+model_utils.py → (يمكن تركها فارغة الآن، مستقبليًا لحفظ LSTM/RF models).
+
+backtester.py → (يمكن تركها فارغة الآن، مستقبليًا لاختبار الأداء).
+
+requirements.txt → جميع المكتبات المطلوبة.
 
 ---
 

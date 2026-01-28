@@ -1,7 +1,9 @@
+# quant_features.py
+import pandas as pd
+
+
 def add_quant_features(df):
-    """
-    إضافة ميزات Quantية إضافية (لـ Random Forest).
-    """
-    df["Feature1"] = df["Return_5"] * df["Momentum"]
-    df["Feature2"] = df["Volatility"] / (df["RSI14"] + 1)
-    return df
+df['Volatility'] = df['XAU'].rolling(window=10).std()
+df['Momentum'] = df['XAU'] - df['XAU'].shift(10)
+df['Unusual'] = (df['Return_5'].abs() > 0.02)
+return df
