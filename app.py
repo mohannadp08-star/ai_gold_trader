@@ -30,6 +30,7 @@ features = ["XAU","EMA20","EMA50","RSI14","Return_5","Volatility","Momentum","Tr
 # تدريب Random Forest
 rf = train_rf(df, features)
 
+# استخدام آخر صف فقط لكل القيم
 last = df.iloc[-1]
 
 rf_pred = rf.predict([last[features]])[0]
@@ -42,7 +43,7 @@ model.fit(X, y, epochs=3, verbose=0)
 pred = model.predict(X[-1].reshape(1, X.shape[1], X.shape[2]))
 pred_price = scaler.inverse_transform([[pred[0][0]] + [0]*(len(features)-1)])[0][0]
 
-# حساب الثقة واتخاذ القرار
+# حساب الثقة واتخاذ القرار باستخدام آخر صف
 conf = confidence_score(rf_pred, pred_price, last["XAU"], last["RSI14"], last["Unusual"])
 decision = make_decision(rf_pred, pred_price, last["XAU"], last["RSI14"], last["Unusual"])
 
@@ -58,4 +59,4 @@ st.write(f"SL: {sl} | TP: {tp}")
 
 # إرسال إشعار Discord إذا كانت الثقة > 75%
 if conf > 75:
-    send_discord_alert(f"🚀 Strong signal detected!\nPrice: {last['XAU']}\nPredicted: {pred_price:.2f}\nConfidence: {conf}%\nDecision: {decision}")
+    send_disc_
