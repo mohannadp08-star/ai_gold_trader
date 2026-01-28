@@ -4,4 +4,5 @@ numpy
 scikit-learn
 tensorflow
 requests
+yfinance
 #MetaTrader5
