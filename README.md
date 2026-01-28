@@ -9,29 +9,17 @@
 
 ai_gold_trader/
 ├── app.py                  # الواجهة الرئيسية (Streamlit dashboard)
-
 ├── data_fetch.py           # جلب بيانات سعر الذهب من Yahoo Finance
-
 ├── analysis.py             # حساب المؤشرات الفنية (EMA, RSI, MACD, Volatility, ...)
-
 ├── quant_features.py       # إضافة ميزات كمية للنماذج
-
 ├── ml_model.py             # تدريب وتحميل نماذج LSTM + RandomForest
-
 ├── decision_engine.py      # اتخاذ قرار BUY / SELL / HOLD
-
 ├── alerts.py               # إرسال تنبيهات إلى Discord
-
 ├── requirements.txt
-
 ├── README.md
-
 └── utils/
-
 ├── model_utils.py      # حفظ وتحميل النماذج
-
 ├── backtester.py       # اختبار رجعي (Sharpe ratio, drawdown, ...)
-
 └── visualization.py    # رسم الشارتات والإشارات
 ## كيف يعمل النظام (How It Works)
 
