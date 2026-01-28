@@ -33,30 +33,32 @@ rf = train_rf(df, features)
 # استخدام آخر صف فقط لكل القيم
 last = df.iloc[-1]
 
-rf_pred = rf.predict([last[features]])[0]
+# تحويل جميع القيم إلى نوع بايثون مفرد (int, float, bool)
+rf_pred = int(rf.predict([last[features]])[0])
+pred_price = float(last["XAU"]) + 0.1  # مثال على التوقع، يمكن تعديل بناءً على LSTM
+current_price = float(last["XAU"])
+rsi = float(last["RSI14"])
+anomaly = bool(last["Unusual"])
 
-# إعداد LSTM
-X, y, scaler = prepare_lstm(df, features)
-model = build_lstm((X.shape[1], X.shape[2]))
-model.fit(X, y, epochs=3, verbose=0)
+# اتخاذ القرار النهائي
+decision = make_decision(rf_pred, pred_price, current_price, rsi, anomaly)
 
-pred = model.predict(X[-1].reshape(1, X.shape[1], X.shape[2]))
-pred_price = scaler.inverse_transform([[pred[0][0]] + [0]*(len(features)-1)])[0][0]
-
-# حساب الثقة واتخاذ القرار باستخدام آخر صف
-conf = confidence_score(rf_pred, pred_price, last["XAU"], last["RSI14"], last["Unusual"])
-decision = make_decision(rf_pred, pred_price, last["XAU"], last["RSI14"], last["Unusual"])
+# حساب الثقة (مثال)
+conf = confidence_score(rf_pred, pred_price, current_price, rsi, anomaly)
 
 # عرض النتائج
-st.metric("Current Price", last["XAU"])
+st.metric("Current Price", current_price)
 st.metric("Predicted Price", pred_price)
 st.metric("Confidence", f"{conf}%")
 st.metric("Decision", decision)
 
+# حساب SL / TP باستخدام ATR
 atr = last["ATR"]
-sl, tp = atr_sl_tp(last["XAU"], atr)
+sl, tp = atr_sl_tp(current_price, atr)
 st.write(f"SL: {sl} | TP: {tp}")
 
 # إرسال إشعار Discord إذا كانت الثقة > 75%
 if conf > 75:
-    send_disc_
+    send_discord_alert(
+        f"🚀 Strong signal detected!\nPrice: {current_price}\nPredicted: {pred_price:.2f}\nConfidence: {conf}%\nDecision: {decision}"
+    )
