@@ -1,8 +1,4 @@
 
-### 3. data_fetch.py
-(كما قدمته سابقًا مع تحسينات بسيطة)
-
-```python
 import os
 import pandas as pd
 import yfinance as yf
