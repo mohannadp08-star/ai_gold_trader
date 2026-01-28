@@ -1,10 +1,15 @@
-# data_fetch.py
 import yfinance as yf
 import pandas as pd
 
-
 def fetch_gold_data():
-df = yf.download("GC=F", period="60d", interval="1h")
-df = df[['Close']].rename(columns={'Close':'XAU'})
-df.index = pd.to_datetime(df.index)
-return df
+    """
+    تحميل بيانات الذهب من Yahoo Finance
+    """
+    try:
+        df = yf.download("GC=F", period="60d", interval="1h")
+        df = df.reset_index()
+        df.rename(columns={"Close": "XAU"}, inplace=True)
+        return df
+    except Exception as e:
+        print(f"Error fetching data: {e}")
+        return pd.DataFrame()

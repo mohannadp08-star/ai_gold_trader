@@ -1,9 +1,10 @@
-# quant_features.py
-import pandas as pd
-
-
 def add_quant_features(df):
-df['Volatility'] = df['XAU'].rolling(window=10).std()
-df['Momentum'] = df['XAU'] - df['XAU'].shift(10)
-df['Unusual'] = (df['Return_5'].abs() > 0.02)
-return df
+    """
+    يمكن إضافة خصائص Quant إضافية هنا
+    """
+    if df.empty:
+        return df
+    # مثال: نسخ مؤشرات موجودة
+    df["Feature1"] = df["EMA20"] - df["EMA50"]
+    df["Feature2"] = df["Momentum"] * df["Volatility"]
+    return df

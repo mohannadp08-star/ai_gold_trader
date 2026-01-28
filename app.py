@@ -1,4 +1,3 @@
-# app.py
 import streamlit as st
 from data_fetch import fetch_gold_data
 from analysis import compute_indicators
@@ -8,50 +7,49 @@ from decision_engine import make_decision
 from alerts import send_discord_alert
 import plotly.graph_objects as go
 
-
 st.set_page_config(page_title="🤖 Auto AI Gold Trader", layout="wide")
 st.title("🤖 Auto AI Gold Trader")
 
-
-# Fetch and prepare data
+# جلب بيانات الذهب
 df = fetch_gold_data()
+
+# حساب المؤشرات الفنية
 df = compute_indicators(df)
+
+# إضافة خصائص Quant
 df = add_quant_features(df)
 
-
+# ميزات النموذج
 features = ["XAU","EMA20","EMA50","RSI14","Return_5","Volatility","Momentum","Unusual"]
-rf = train_rf(df, features)
-last = df.iloc[-1]
-rf_pred = rf.predict([last[features]])[0]
 
+# تدريب نموذج Random Forest
+if not df.empty:
+    rf = train_rf(df, features)
+    last = df.iloc[-1]
+    rf_pred = rf.predict([last[features]])[0]
 
-# Use float conversion safely
-pred_price = float(last["XAU"] + 0.1) # مثال على التوقع يمكن تغييره لاحقًا
-current_price = float(last["XAU"])
-rsi = float(last["RSI14"])
-anomaly = bool(last["Unusual"].any()) # تصحيح مشكلة truth value
+    # بيانات التوقعات
+    pred_price = float(last["XAU"]) + 0.1
+    current_price = float(last["XAU"])
+    rsi = float(last["RSI14"])
+    anomaly = last["Unusual"].any() if hasattr(last["Unusual"], "__iter__") else bool(last["Unusual"])
 
+    # القرار النهائي
+    decision = make_decision(rf_pred, pred_price, current_price, rsi, anomaly)
 
-# Decision
-decision = make_decision(rf_pred, pred_price, current_price, rsi, anomaly)
-sl = current_price - (current_price * 0.0085)
-tp = current_price + (current_price * 0.0095)
+    # إشعار Discord
+    send_discord_alert(decision, current_price, pred_price)
 
+    # عرض المعلومات
+    st.metric("Current Price", current_price)
+    st.metric("Predicted Price (LSTM)", pred_price)
+    st.metric("Decision", decision)
 
-# Discord Alert
-send_discord_alert(decision, current_price, pred_price)
+    # شارت تفاعلي
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=df.index, y=df["XAU"], mode="lines", name="XAU"))
+    fig.update_layout(title="Gold Price Chart", xaxis_title="Time", yaxis_title="Price (USD)")
+    st.plotly_chart(fig, use_container_width=True)
 
-
-# Plot chart
-fig = go.Figure()
-fig.add_trace(go.Scatter(x=df.index, y=df['XAU'], mode='lines', name='Gold Price'))
-fig.update_layout(title='Gold Price Chart', xaxis_title='Date', yaxis_title='Price', template='plotly_dark')
-st.plotly_chart(fig, width='stretch')
-
-
-# Display info
-st.metric("Current Price", f"{current_price:.2f}")
-st.metric("Predicted Price (LSTM)", f"{pred_price:.2f}")
-st.metric("Confidence", "50%")
-st.metric("Decision", decision)
-st.write(f"Stop Loss: {sl:.2f} | Take Profit: {tp:.2f}")
+else:
+    st.warning("No data available to train the model.")
