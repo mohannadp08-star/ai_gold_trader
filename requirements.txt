@@ -6,4 +6,5 @@ tensorflow
 requests
 yfinance
 plotly
+alerts
 #MetaTrader5
