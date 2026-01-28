@@ -12,7 +12,7 @@ import numpy as np
 
 st.title("🤖 Auto AI Gold Trader")
 
-# جلب البيانات
+# ────────────── جلب البيانات ──────────────
 df = fetch_gold_data()
 
 # التحقق من وجود البيانات
@@ -20,40 +20,40 @@ if df.empty:
     st.error("لا توجد بيانات متاحة الآن. حاول مرة أخرى لاحقًا.")
     st.stop()
 
-# التحليلات والمؤشرات
+# ────────────── التحليلات والمؤشرات ──────────────
 df = compute_indicators(df)
 df = add_quant_features(df)
 df = calculate_atr(df)
 
 features = ["XAU","EMA20","EMA50","RSI14","Return_5","Volatility","Momentum","Trend_EMA"]
 
-# تدريب Random Forest
+# ────────────── تدريب Random Forest ──────────────
 rf = train_rf(df, features)
 
 # استخدام آخر صف فقط لكل القيم
 last = df.iloc[-1]
 
-# تحويل جميع القيم إلى نوع بايثون مفرد (int, float, bool)
+# تحويل كل القيم إلى نوع بايثون مفرد
 rf_pred = int(rf.predict([last[features]])[0])
-pred_price = float(last["XAU"]) + 0.1  # مثال على التوقع، يمكن تعديل بناءً على LSTM
-current_price = float(last["XAU"])
-rsi = float(last["RSI14"])
-anomaly = bool(last["Unusual"])
+pred_price = float(last["XAU"].iloc[0]) + 0.1  # مثال على التوقع، يمكن تعديل بناءً على LSTM
+current_price = float(last["XAU"].iloc[0])
+rsi = float(last["RSI14"].iloc[0])
+anomaly = bool(last["Unusual"].iloc[0])         # تحويل Series صغيرة إلى bool
 
-# اتخاذ القرار النهائي
+# ────────────── اتخاذ القرار النهائي ──────────────
 decision = make_decision(rf_pred, pred_price, current_price, rsi, anomaly)
 
-# حساب الثقة (مثال)
+# حساب الثقة
 conf = confidence_score(rf_pred, pred_price, current_price, rsi, anomaly)
 
-# عرض النتائج
+# ────────────── عرض النتائج ──────────────
 st.metric("Current Price", current_price)
 st.metric("Predicted Price", pred_price)
 st.metric("Confidence", f"{conf}%")
 st.metric("Decision", decision)
 
 # حساب SL / TP باستخدام ATR
-atr = last["ATR"]
+atr = last["ATR"].iloc[0]
 sl, tp = atr_sl_tp(current_price, atr)
 st.write(f"SL: {sl} | TP: {tp}")
 
