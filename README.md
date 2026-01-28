@@ -59,3 +59,32 @@ pip install -r requirements.txt
 
 # 3. شغل التطبيق
 streamlit run app.py
+
+
+--بالإنجليزية (English)
+
+Confidence: 0.85 means that the system (AI model) is 85% confident in its trading decision.
+
+Higher values (close to 1.0) mean the prediction is stronger and more reliable.
+
+Lower values (close to 0) mean the prediction is weak or uncertain.
+
+In your case:
+
+decision = BUY
+
+confidence = 0.85 → the AI model believes there is a strong chance that buying is the correct action.
+
+-- بالعربية (Arabic)
+
+الثقة: 0.85 تعني أن النظام (نموذج الذكاء الاصطناعي) متأكد بنسبة 85% من القرار الحالي للتداول.
+
+كلما اقتربت القيمة من 1 → القرار أكثر قوة واعتمادية.
+
+كلما اقتربت القيمة من 0 → القرار ضعيف أو غير مؤكد.
+
+في حالتك:
+
+القرار الحالي: شراء (BUY)
+
+الثقة: 0.85 → النموذج يعتقد أن هناك احتمال قوي بأن الشراء هو الخيار الصحيح.
