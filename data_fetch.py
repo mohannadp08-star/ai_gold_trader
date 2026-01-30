@@ -1,18 +1,27 @@
+# data_fetch.py
 import yfinance as yf
 import pandas as pd
 
-CACHE_FILE = "gold_data.csv"
-
 def fetch_gold_data():
-    """
-    جلب بيانات الذهب التاريخية من Yahoo Finance
-    أو تحميلها من الكاش المحلي إذا كان موجودًا
-    """
-    try:
-        df = pd.read_csv(CACHE_FILE, index_col=0, parse_dates=True)
-        print("Loaded cached data")
-    except FileNotFoundError:
-        print("Fetching data from Yahoo Finance...")
-        df = yf.download("GC=F", start="2020-01-01", interval="1d")
-        df.to_csv(CACHE_FILE)
+    df = yf.download("GC=F", period="90d", interval="1h", auto_adjust=True)
+
+    if df.empty:
+        return df
+
+    # 🧠 إصلاح مشكلة MultiIndex القادمة من yfinance
+    if isinstance(df.columns, pd.MultiIndex):
+        df.columns = df.columns.get_level_values(0)
+
+    df = df.reset_index()
+
+    # توحيد أسماء الأعمدة
+    df.rename(columns={
+        "Datetime": "Date",
+        "Close": "Close",
+        "Open": "Open",
+        "High": "High",
+        "Low": "Low",
+        "Volume": "Volume"
+    }, inplace=True)
+
     return df
